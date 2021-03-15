@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>买卖合同</title>
-    <style type="text/css">
+    <style type="text/css" @media="print">
         html,
         body {
             height: 100%;
@@ -16,7 +16,7 @@
             font-size: 10.5pt;
         }
 
-        div,p,span,h3,h4,i,ul,li{
+        body,div,p,span,h3,h4,i,ul,li{
             margin: 0;
             padding: 0;
         }
@@ -79,12 +79,21 @@
         }
 
         .page-height {
+            position: relative;
             page-break-after: always;
             overflow: hidden;
-            line-height: 99%;
-            padding:10mm 10mm 6mm;
+            height: 27cm;
+            padding:1cm 1cm 0.6cm;
+            box-sizing: border-box;
         }
-
+        .page-height footer{
+            position: absolute;
+            left:0;
+            right:0;
+            bottom:0;
+            text-align: center;
+            font-size:10pt;
+        }
         .color-red {
             color: red;
         }
@@ -179,27 +188,28 @@
         .checkbox{
             width:8pt;
             height:8pt;
-            border:1pt solid #000;
+            /* border:1pt solid #000; */
             vertical-align: -1pt;
             display: inline-block;
             position: relative;
             margin-right:2pt;
             margin-left:5px;
+            font-style: normal;
         }
         .checkbox.checked::after{
             position: absolute;
-            content:'√';
+            content:'☑';
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-62%,-50%);
         }
         .checkbox::after{
             position: absolute;
-            content:'×';
+            content:'☒';
             text-indent: 0;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-60%,-50%);
         }
         .font-family-heiti{
             font-family: 黑体;
@@ -475,6 +485,7 @@
                     </tr>
                 </table>
             </div>
+            <footer>1</footer>
         </div>
         <!-- 第4页 -->
         <div class="page-height">
@@ -665,6 +676,7 @@
                     </tr>
                 </table>
             </div>
+            <footer>2</footer>
         </div>
         <!-- 第5页 -->
         <div class="page-height">
@@ -877,6 +889,7 @@
                 <i v-if="!isBlankContract" :class="['checkbox',pageData.capitalSource=='1' ? 'checked' : '']"></i>
                 <span v-else>□</span>
                 甲方自筹资金；</p>
+            <footer>3</footer>
         </div>
         <!-- 第6页 -->
         <div class="page-height">
@@ -970,6 +983,7 @@
             <p><span
                     class="font-bold">（五）</span>乙方承诺知晓青岛市当地的购房限购政策，并具备相应的购房资质，如因乙方无购房资质导致合同无法继续履行的，乙方构成根本违约。如乙方系贷款购买交易房屋的，则乙方承诺其已了解贷款的相应政策，并承诺其征信良好，具备贷款资质。
             </p>
+            <footer>4</footer>
         </div>
         <!-- 第7页 -->
         <div class="page-height">
@@ -1206,6 +1220,7 @@
                     □办理完毕该房屋所有权转移登记手续后，于□当日/□_____个工作日内将该房屋交付给乙方；
                 </span>
             </p>
+            <footer>5</footer>
         </div>
         <!-- 第8页 -->
         <div v-if="!isBlankContract" class="page-height">
@@ -1275,6 +1290,7 @@
             <p class="section">1、甲方提供的产权证明手续不真实、不完整、无效，导致乙方无法取得房屋所有权的；</p>
             <p class="section">2、该房屋被查封或限制转让，导致乙方无法取得房屋所有权的；</p>
             <p class="section">3、逾期履行本合同约定的义务超过十五日的； </p>
+            <footer>6</footer>
         </div>
         <!-- 第8页 空页面 -->
         <div v-else class="page-height">
@@ -1330,6 +1346,7 @@
             <p class="section">1、甲方提供的产权证明手续不真实、不完整、无效，导致乙方无法取得房屋所有权的；</p>
             <p class="section">2、该房屋被查封或限制转让，导致乙方无法取得房屋所有权的；</p>
             <p class="section">3、逾期履行本合同约定的义务超过十五日的； </p>
+            <footer>6</footer>
         </div>
         <!-- 第9页 -->
         <div class="page-height">
@@ -1403,6 +1420,7 @@
                     <td></td>
                 </tr>
             </table>
+            <footer>7</footer>
         </div>
         <!-- 第10页 -->
         <div v-if="!isBlankContract" class="page-height">
@@ -1475,6 +1493,7 @@
                     <td></td>
                 </tr>
             </table>
+            <footer>8</footer>
         </div>
         <!-- 第10页 空页面 -->
         <div v-else class="page-height">
@@ -1527,6 +1546,7 @@
                     <td></td>
                 </tr>
             </table>
+            <footer>8</footer>
         </div>
         <!-- 第11页 -->
         <div class="page-height">
@@ -1558,21 +1578,22 @@
             <p class="section">本协议书一式三份，甲乙双方各执一份，丙方留存一份，自各方签章之日起生效。各方同意，未经本人签字或加盖公章的任何书面承诺、口头承诺、条款的变更等行为均不产生法律约束力。</p>
             <table class="margin-top-20 line-height-30" width="100%">
                 <tr class="font-bold">
-                    <td width="20%"> 甲方（签章）：</td>
+                    <td width="20%">甲方（签章）：</td>
                     <td width="30%"></td>
                     <td width="30%">乙方（签章）：</td>
                     <td width="30%"></td>
                 </tr>
             </table>
+            <footer>9</footer>
         </div>
         <!-- 第12页 -->
         <div class="page-height">
             <header>1.0版</header>
             <table class="margin-top-20 line-height-30" width="100%">
                 <tr class="font-bold">
-                    <td width="22%">【代理人】签章：</td>
+                    <td width="22%">代理人（签章）：</td>
                     <td width="28%"></td>
-                    <td width="20%">【代理人】签章：</td>
+                    <td width="20%">代理人（签章）：</td>
                     <td width="30%"></td>
                 </tr>
                 <tr class="font-bold">
@@ -1594,6 +1615,7 @@
                     <td></td>
                 </tr>
             </table>
+            <footer>10</footer>
         </div>
     </div>
     
@@ -1797,20 +1819,38 @@
 
                 return imgUrl
             },
-            transformPdf(data = {}) {
-                data = Object.assign(data, { timeout: 60000 })
-                return axios({
-                    url: `http://local.chanjue.top:8080/pdf-service/generatePDF`,
-                    method: 'post',
-                    data: {
-                        pages: [location.href],
-                        waitFor: 'window.isOk==true'
-                    }
-                })
-            },
+            // transformPdf(data = {}) {
+            //     data = Object.assign(data, { timeout: 60000 })
+            //     return axios({
+            //         url: `http://local.chanjue.top:8080/pdf-service/generatePDF`,
+            //         method: 'post',
+            //         data: {
+            //             pages: [location.href],
+            //             waitFor: 'window.isOk==true'
+            //         }
+            //     })
+            // },
             creatPdf(){
                 this.transformPdf()
-            }
+            },
+                // 转成pdf
+            transformPdf(data = {}) {
+                if(this.showContent) {
+                    data = Object.assign(data, {timeout: 60000, waitFor: 'window.isOk==true'})
+                }
+                 axios({
+                    url: `http://local.chanjue.top:8080/pdf-service/generatePDF`,
+                    method: 'post',
+                    data: {
+                        pages: [location.href],
+                        ...data
+                    }
+                }).then(res => {
+                    if(!res.data.data) return
+                    window.open('http://'+ location.hostname + ':8080' + res.data.data)
+                })
+            },
+
             // // 查询数据字典
             // getDicts(type) {
             //     return axios({
