@@ -1,13 +1,13 @@
 
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>买卖合同</title>
-    <style type="text/css" @media="print">
+    <style type="text/css">
         html,
         body {
             height: 100%;
@@ -65,7 +65,7 @@
             text-align: center;
             font-size: 15pt;
             line-height: 50pt;
-            font-family: 黑体;
+            font-family: simsunbd;
         }
 
         .sign-box {
@@ -82,15 +82,19 @@
             position: relative;
             page-break-after: always;
             overflow: hidden;
-            height: 27cm;
-            padding:1cm 1cm 0.6cm;
+            height: 29.5cm;
+            padding:0.6cm 1cm 0.6cm;
             box-sizing: border-box;
+        }
+        .page-height header {
+            line-height: 16pt;
+            border-bottom: 1pt solid #000;
         }
         .page-height footer{
             position: absolute;
             left:0;
             right:0;
-            bottom:0;
+            bottom:20pt;
             text-align: center;
             font-size:10pt;
         }
@@ -102,7 +106,7 @@
             font-size: 18pt;
             text-align: center;
             font-weight: bold;
-            font-family: 黑体;
+            font-family: simsunbd;
             width: 150pt;
             line-height: 40pt;
             margin: 200pt auto;
@@ -134,7 +138,7 @@
         }
         .contract-code {
             font-size: 14pt;
-            font-family: 黑体;
+            font-family: simsunbd;
         }
         .text-indent0 {
             text-indent: 0;
@@ -173,10 +177,6 @@
             font-size: 14pt;
         }
 
-        header {
-            border-bottom: 1px solid #ccc
-        }
-
         .table-title {
             font-size: 10.5pt;
             padding-top: 5pt;
@@ -212,7 +212,7 @@
             transform: translate(-60%,-50%);
         }
         .font-family-heiti{
-            font-family: 黑体;
+            font-family: simsunbd;
         }
         .font-size-kaiti{
             font-family:cursive;
@@ -240,18 +240,18 @@
 
 <body class="body">
     <div id="root">
-        <!-- 第1页 -->
+        <!-- 封面页 -->
         <div class="page-height">
             <header>1.0版</header>
             <p class="contract-code margin-top-20">合同编号：{{ contractNo }}</p>
             <div class="word-face-title">
                 <p>房屋买卖业务</p>
                 <p>签订文件合订本</p>
-                <a @click="creatPdf">pdf</a>
+                <a @click="creatPdf">pdf316</a>
             </div>
             <p class="text-center font-size-12 margin-top-300 font-family-heiti">2021年</p>
         </div>
-        <!-- 第2页 -->
+        <!-- 签约提示页 -->
         <div class="page-height">
             <header>1.0版</header>
             <h3 class="title"> 签约提示</h3>
@@ -269,8 +269,8 @@
                     class="underline font-bold">请务必做出明确的勾选</span>，以划 “√ ”方式选定您选择的事项；对于实际情况未发生、或双方当事人不作约定、或该条不适用时，应当划“×”
                 ，以示删除。</p>
         </div>
-        <!-- 第3页 -->
-        <div class="page-height">
+        <!-- 第1页 -->
+        <div v-if="!isBlankContract" class="page-height">
             <header>1.0版</header>
             <h3 class="word-face-sub-title margin-top-20 font-family-heiti">交易方留存信息表</h3>
             <div>
@@ -278,219 +278,437 @@
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.sellerName}}</td>
+                        <td colspan="5">{{pageData.sellerName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.sellerEnglishName}}</td>
+                        <td colspan="5">{{pageData.sellerEnglishName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.sellerSex}}</td>
+                        <td width="16%">{{pageData.sellerSex | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.sellerNationality}}</td>
+                        <td width="16%">{{pageData.sellerNationality || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.sellerBirthDate}}</td>
+                        <td width="16%">{{pageData.sellerBirthDate || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.sellerDocumentType}}</td>
+                        <td colspan="2">{{pageData.sellerDocumentType || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.sellerIdCode}}</td>
+                        <td colspan="2">{{pageData.sellerIdCode || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.sellerContactPhone}}</td>
+                        <td colspan="2">{{pageData.sellerContactPhone || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.sellerEmail}}</td>
+                        <td colspan="2">{{pageData.sellerEmail || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.sellerAddress}}</td>
+                        <td colspan="5">{{pageData.sellerAddress || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">共有权人一</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.sellerPartnerName}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.sellerPartnerEnglishName}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerEnglishName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.sellerPartnerSex}}</td>
+                        <td width="16%">{{pageData.sellerPartnerSex  | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.sellerPartnerNationality}}</td>
+                        <td width="16%">{{pageData.sellerPartnerNationality || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.sellerPartnerBirthDate}}</td>
+                        <td width="16%">{{pageData.sellerPartnerBirthDate || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.sellerPartnerDocumentType}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerDocumentType || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.sellerPartnerIdCode}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerIdCode || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.sellerPartnerContactPhone}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerContactPhone || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.sellerPartnerEmail}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerEmail || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.sellerPartnerAddress}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerAddress || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">共有权人二</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.sellerPartnerName1}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerName1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.sellerPartnerEnglishName1}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerEnglishName1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.sellerPartnerSex1}}</td>
+                        <td width="16%">{{pageData.sellerPartnerSex1  | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.sellerPartnerNationality1}}</td>
+                        <td width="16%">{{pageData.sellerPartnerNationality1 || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.sellerPartnerBirthDate1}}</td>
+                        <td width="16%">{{pageData.sellerPartnerBirthDate1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.sellerPartnerDocumentType1}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerDocumentType1 || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.sellerPartnerIdCode1}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerIdCode1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.sellerPartnerContactPhone1}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerContactPhone1 || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.sellerPartnerEmail1}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerEmail1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.sellerPartnerAddress1}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerAddress1 || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">共有权人三</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.sellerPartnerName2}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerName2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.sellerPartnerEnglishName2}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerEnglishName2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.sellerPartnerSex2}}</td>
+                        <td width="16%">{{pageData.sellerPartnerSex2 | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.sellerPartnerNationality2}}</td>
+                        <td width="16%">{{pageData.sellerPartnerNationality2 || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.sellerPartnerBirthDate2}}</td>
+                        <td width="16%">{{pageData.sellerPartnerBirthDate2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.sellerPartnerDocumentType2}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerDocumentType2 || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.sellerPartnerIdCode2}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerIdCode2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.sellerPartnerContactPhone2}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerContactPhone2 || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.sellerPartnerEmail2}}</td>
+                        <td colspan="2">{{pageData.sellerPartnerEmail2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.sellerPartnerAddress2}}</td>
+                        <td colspan="5">{{pageData.sellerPartnerAddress2 || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">代理人一（如有）</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.sellerProxyName}}</td>
+                        <td colspan="5">{{pageData.sellerProxyName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.sellerProxyEnglishName}}</td>
+                        <td colspan="5">{{pageData.sellerProxyEnglishName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.sellerProxySex}}</td>
+                        <td width="16%">{{pageData.sellerProxySex | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.sellerProxyNationality}}</td>
+                        <td width="16%">{{pageData.sellerProxyNationality || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.sellerProxyBirthDate}}</td>
+                        <td width="16%">{{pageData.sellerProxyBirthDate || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.sellerProxyDocumentType}}</td>
+                        <td colspan="2">{{pageData.sellerProxyDocumentType || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.sellerProxyIdCode}}</td>
+                        <td colspan="2">{{pageData.sellerProxyIdCode || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.sellerProxyContactPhone}}</td>
+                        <td colspan="2">{{pageData.sellerProxyContactPhone || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.sellerProxyEmail}}</td>
+                        <td colspan="2">{{pageData.sellerProxyEmail || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.sellerProxyAddress}}</td>
+                        <td colspan="5">{{pageData.sellerProxyAddress || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">代理人二（如有）</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.sellerProxyName1}}</td>
+                        <td colspan="5">{{pageData.sellerProxyName1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.sellerProxyEnglishName1}}</td>
+                        <td colspan="5">{{pageData.sellerProxyEnglishName1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.sellerProxySex1}}</td>
+                        <td width="16%">{{pageData.sellerProxySex1 | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.sellerProxyNationality1}}</td>
+                        <td width="16%">{{pageData.sellerProxyNationality1 || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.sellerProxyBirthDate1}}</td>
+                        <td width="16%">{{pageData.sellerProxyBirthDate1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.sellerProxyDocumentType1}}</td>
+                        <td colspan="2">{{pageData.sellerProxyDocumentType1 || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.sellerProxyIdCode1}}</td>
+                        <td colspan="2">{{pageData.sellerProxyIdCode1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.sellerProxyContactPhone1}}</td>
+                        <td colspan="2">{{pageData.sellerProxyContactPhone1 || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.sellerProxyEmail1}}</td>
+                        <td colspan="2">{{pageData.sellerProxyEmail1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.sellerProxyAddress1}}</td>
+                        <td colspan="5">{{pageData.sellerProxyAddress1 || '×'}}</td>
                     </tr>
                 </table>
             </div>
             <footer>1</footer>
         </div>
-        <!-- 第4页 -->
-        <div class="page-height">
+        <!-- 第1页空白頁 -->
+        <div v-else class="page-height">
             <header>1.0版</header>
-            <p class="section">本页所列信息适用于本合订本全部文件，包括《青岛市存量房买卖合同》《居间服务合同》及本次交易涉及的所有文本。如交易一方信息发生变化，需及时书面告知对方及我公司。</p>
+            <h3 class="word-face-sub-title margin-top-20 font-family-heiti">交易方留存信息表</h3>
+            <div>
+                <h4 class="table-title">房屋出卖人</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">共有权人一</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">共有权人二</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">共有权人三</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">代理人一（如有）</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">代理人二（如有）</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+            </div>
+            <footer>1</footer>
+        </div>
+        <!-- 第2页 -->
+        <div v-if="!isBlankContract" class="page-height">
+            <header>1.0版</header>
+            <p class="section margin-top-20">本页所列信息适用于本合订本全部文件，包括《青岛市存量房买卖合同》《居间服务合同》及本次交易涉及的所有文本。如交易一方信息发生变化，需及时书面告知对方及我公司。</p>
             <p class="font-size-12 font-bold margin-top-20">房屋出卖人（签章）：<span class="underline width-100"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;日</p>
             <div class="margin-top-20">
                 <h4 class="table-title">房屋买受人</h4>
@@ -505,7 +723,7 @@
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.buyerSex}}</td>
+                        <td width="16%">{{pageData.buyerSex | filterSex}}</td>
                         <td>国籍</td>
                         <td width="16%">{{pageData.buyerNationality}}</td>
                         <td>出生日期</td>
@@ -532,183 +750,404 @@
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.buyerPartnerName}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.buyerPartnerEnglishName}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerEnglishName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.buyerPartnerSex}}</td>
+                        <td width="16%">{{pageData.buyerPartnerSex | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.buyerPartnerNationality}}</td>
+                        <td width="16%">{{pageData.buyerPartnerNationality || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.buyerPartnerBirthDate}}</td>
+                        <td width="16%">{{pageData.buyerPartnerBirthDate || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.buyerPartnerDocumentType}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerDocumentType || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.buyerPartnerIdCode}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerIdCode || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.buyerPartnerContactPhone}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerContactPhone || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.buyerPartnerEmail}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerEmail || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.buyerPartnerAddress}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerAddress || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">共同买受人二</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.buyerPartnerName1}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerName1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.buyerPartnerEnglishName1}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerEnglishName1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.buyerPartnerSex1}}</td>
+                        <td width="16%">{{pageData.buyerPartnerSex1 | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.buyerPartnerNationality1}}</td>
+                        <td width="16%">{{pageData.buyerPartnerNationality1 || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.buyerPartnerBirthDate1}}</td>
+                        <td width="16%">{{pageData.buyerPartnerBirthDate1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.buyerPartnerDocumentType1}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerDocumentType1 || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.buyerPartnerIdCode1}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerIdCode1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.buyerPartnerContactPhone1}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerContactPhone1 || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.buyerPartnerEmail1}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerEmail1 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.buyerPartnerAddress1}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerAddress1 || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">共同买受人三</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.buyerPartnerName2}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerName2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.buyerPartnerEnglishName2}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerEnglishName2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.buyerPartnerSex2}}</td>
+                        <td width="16%">{{pageData.buyerPartnerSex2 | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.buyerPartnerNationality2}}</td>
+                        <td width="16%">{{pageData.buyerPartnerNationality2 || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.buyerPartnerBirthDate2}}</td>
+                        <td width="16%">{{pageData.buyerPartnerBirthDate2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.buyerPartnerDocumentType2}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerDocumentType2 || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.buyerPartnerIdCode2}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerIdCode2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.buyerPartnerContactPhone2}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerContactPhone2 || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.buyerPartnerEmail2}}</td>
+                        <td colspan="2">{{pageData.buyerPartnerEmail2 || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.buyerPartnerAddress2}}</td>
+                        <td colspan="5">{{pageData.buyerPartnerAddress2 || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">代理人一（如有）</h4>
                 <table class="table">
                     <tr>
                         <td>姓名</td>
-                        <td colspan="5">{{pageData.buyerProxyName}}</td>
+                        <td colspan="5">{{pageData.buyerProxyName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>英文名</td>
-                        <td colspan="5">{{pageData.buyerProxyEnglishName}}</td>
+                        <td colspan="5">{{pageData.buyerProxyEnglishName || '×'}}</td>
                     </tr>
                     <tr>
                         <td>性别</td>
-                        <td width="16%">{{pageData.buyerProxySex}}</td>
+                        <td width="16%">{{pageData.buyerProxySex | filterSex}}</td>
                         <td>国籍</td>
-                        <td width="16%">{{pageData.buyerProxyNationality}}</td>
+                        <td width="16%">{{pageData.buyerProxyNationality || '×'}}</td>
                         <td>出生日期</td>
-                        <td width="16%">{{pageData.buyerProxyBirthDate}}</td>
+                        <td width="16%">{{pageData.buyerProxyBirthDate || '×'}}</td>
                     </tr>
                     <tr>
                         <td>证件名称</td>
-                        <td colspan="2">{{pageData.buyerProxyDocumentType}}</td>
+                        <td colspan="2">{{pageData.buyerProxyDocumentType || '×'}}</td>
                         <td>证件号码</td>
-                        <td colspan="2">{{pageData.buyerProxyIdCode}}</td>
+                        <td colspan="2">{{pageData.buyerProxyIdCode || '×'}}</td>
                     </tr>
                     <tr>
                         <td>联系电话</td>
-                        <td colspan="2">{{pageData.buyerProxyContactPhone}}</td>
+                        <td colspan="2">{{pageData.buyerProxyContactPhone || '×'}}</td>
                         <td>电子邮箱</td>
-                        <td colspan="2">{{pageData.buyerProxyEmail}}</td>
+                        <td colspan="2">{{pageData.buyerProxyEmail || '×'}}</td>
                     </tr>
                     <tr>
                         <td>通讯地址</td>
-                        <td colspan="5">{{pageData.buyerProxyAddress}}</td>
+                        <td colspan="5">{{pageData.buyerProxyAddress || '×'}}</td>
                     </tr>
                 </table>
                 <h4 class="table-title">代理人二（如有）</h4>
                 <table class="table">
                     <tr>
                         <td width="21%">姓名</td>
-                        <td colspan="5">{{pageData.buyerProxyName1}}</td>
+                        <td colspan="5">{{pageData.buyerProxyName1 || '×'}}</td>
                     </tr>
                 </table>
             </div>
             <footer>2</footer>
         </div>
-        <!-- 第5页 -->
+         <!-- 第2页空白頁 -->
+         <div v-else class="page-height">
+            <header>1.0版</header>
+            <p class="section margin-top-20">本页所列信息适用于本合订本全部文件，包括《青岛市存量房买卖合同》《居间服务合同》及本次交易涉及的所有文本。如交易一方信息发生变化，需及时书面告知对方及我公司。</p>
+            <p class="font-size-12 font-bold margin-top-20">房屋出卖人（签章）：<span class="underline width-100"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;日</p>
+            <div class="margin-top-20">
+                <h4 class="table-title">房屋买受人</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">共同买受人一</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">共同买受人二</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">共同买受人三</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">代理人一（如有）</h4>
+                <table class="table">
+                    <tr>
+                        <td>姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>英文名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>性别</td>
+                        <td width="16%"></td>
+                        <td>国籍</td>
+                        <td width="16%"></td>
+                        <td>出生日期</td>
+                        <td width="16%"></td>
+                    </tr>
+                    <tr>
+                        <td>证件名称</td>
+                        <td colspan="2"></td>
+                        <td>证件号码</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td colspan="2"></td>
+                        <td>电子邮箱</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>通讯地址</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+                <h4 class="table-title">代理人二（如有）</h4>
+                <table class="table">
+                    <tr>
+                        <td width="21%">姓名</td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+            </div>
+            <footer>2</footer>
+        </div>
+        <!-- 第3页 -->
         <div class="page-height">
             <header>1.0版</header>
-            <table class="table">
+            <table v-if="!isBlankContract" class="table margin-top-20">
                 <tr>
                     <td>英文名</td>
-                    <td colspan="5">{{pageData.buyerProxyEnglishName1}}</td>
+                    <td colspan="5">{{pageData.buyerProxyEnglishName1 || '×'}}</td>
                 </tr>
                 <tr>
                     <td>性别</td>
-                    <td width="16%">{{pageData.buyerProxySex1}}</td>
+                    <td width="16%">{{pageData.buyerProxySex1 | filterSex}}</td>
                     <td>国籍</td>
-                    <td width="16%">{{pageData.buyerProxyNationality1}}</td>
+                    <td width="16%">{{pageData.buyerProxyNationality1 || '×'}}</td>
                     <td>出生日期</td>
-                    <td width="16%">{{pageData.buyerProxyBirthDate1}}</td>
+                    <td width="16%">{{pageData.buyerProxyBirthDate1 || '×'}}</td>
                 </tr>
                 <tr>
                     <td>证件名称</td>
-                    <td colspan="2">{{pageData.buyerProxyDocumentType1}}</td>
+                    <td colspan="2">{{pageData.buyerProxyDocumentType1 || '×'}}</td>
                     <td>证件号码</td>
-                    <td colspan="2">{{pageData.buyerProxyIdCode1}}</td>
+                    <td colspan="2">{{pageData.buyerProxyIdCode1 || '×'}}</td>
                 </tr>
                 <tr>
                     <td>联系电话</td>
-                    <td colspan="2">{{pageData.buyerProxyContactPhone1}}</td>
+                    <td colspan="2">{{pageData.buyerProxyContactPhone1 || '×'}}</td>
                     <td>电子邮箱</td>
-                    <td colspan="2">{{pageData.buyerProxyEmail1}}</td>
+                    <td colspan="2">{{pageData.buyerProxyEmail1 || '×'}}</td>
                 </tr>
                 <tr>
                     <td>通讯地址</td>
-                    <td colspan="5">{{pageData.buyerProxyAddress1}}</td>
+                    <td colspan="5">{{pageData.buyerProxyAddress1 || '×'}}</td>
+                </tr>
+            </table>
+            <table v-else class="table margin-top-20">
+                <tr>
+                    <td>英文名</td>
+                    <td colspan="5"></td>
+                </tr>
+                <tr>
+                    <td>性别</td>
+                    <td width="16%"></td>
+                    <td>国籍</td>
+                    <td width="16%"></td>
+                    <td>出生日期</td>
+                    <td width="16%"></td>
+                </tr>
+                <tr>
+                    <td>证件名称</td>
+                    <td colspan="2"></td>
+                    <td>证件号码</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td>联系电话</td>
+                    <td colspan="2"></td>
+                    <td>电子邮箱</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td>通讯地址</td>
+                    <td colspan="5"></td>
                 </tr>
             </table>
             <p class="section">本页所列信息适用于本合订本全部文件，包括《青岛市存量房买卖合同》《居间服务合同》及本次交易涉及的所有文本。如交易一方信息发生变化，需及时书面告知对方及我公司。</p>
@@ -891,10 +1330,10 @@
                 甲方自筹资金；</p>
             <footer>3</footer>
         </div>
-        <!-- 第6页 -->
+        <!-- 第4页 -->
         <div class="page-height">
             <header>1.0版</header>
-            <p class="section">
+            <p class="section margin-top-20">
                 <i v-if="!isBlankContract" :class="['checkbox',pageData.capitalSource=='2' ? 'checked' : '']"></i>
                 <span v-else>□</span>
                 乙方的第
@@ -985,10 +1424,10 @@
             </p>
             <footer>4</footer>
         </div>
-        <!-- 第7页 -->
+        <!-- 第5页 -->
         <div class="page-height">
             <header>1.0版</header>
-            <p class="font-bold">第五条 成交价格、付款方式及资金划转方式 </p>
+            <p class="font-bold margin-top-20">第五条 成交价格、付款方式及资金划转方式 </p>
             <p>
                 （一）经甲方和乙方协商一致，该房屋及家具、家电、装饰装修及配套设施设备等成交总价格为：人民币（小写）
                 <span v-if="!isBlankContract" class="underline">{{pageData.housingRental}}</span>
@@ -1222,10 +1661,10 @@
             </p>
             <footer>5</footer>
         </div>
-        <!-- 第8页 -->
+        <!-- 第6页 -->
         <div v-if="!isBlankContract" class="page-height">
             <header>1.0版</header>
-            <p class="section"><i :class="['checkbox',pageData.deliveryAgreement=='2' ? 'checked' : '']"></i>甲方收到全部购房款（不含物业交割保证金和户口空挂/迁出保证金）后<span class="underline">{{pageData.deliveryAgreementTime || '×'}}</span>个工作日内交付给乙方；</p>
+            <p class="section margin-top-20"><i :class="['checkbox',pageData.deliveryAgreement=='2' ? 'checked' : '']"></i>甲方收到全部购房款（不含物业交割保证金和户口空挂/迁出保证金）后<span class="underline">{{pageData.deliveryAgreementTime || '×'}}</span>个工作日内交付给乙方；</p>
             <p class="section"><i :class="['checkbox',pageData.deliveryAgreement=='3' ? 'checked' : '']"></i>按照本项约定时间或约定条件：<span class="underline">{{pageData.deliveryAgreementDay || pageData.deliveryAgreementTime || '×'}}</span>将该房屋交付给乙方。</p>
             <p>(二)该房屋交付时，应当履行下列第<span class="underline">1、2、3</span>项手续：</p>
             <p class="section">1、甲方与乙方共同对该房屋附属设施设备、装饰装修、相关物品清单等具体情况进行验收，记录水、电、气表的读数，并交接附件一物业交割单中所列物品；</p>
@@ -1246,11 +1685,7 @@
             <p class="font-bold">第八条税、费相关规定</p>
             <p>（一）甲方确认：</p>
             <p class="section">1、交易房屋：<span class="font-bold">
-                <i :class="['checkbox',pageData.full=='1' ? 'checked' : '']"></i>所有权证满五年/
-                <i :class="['checkbox',pageData.full=='2' ? 'checked' : '']"></i>契税票满五年/
-                <i :class="['checkbox',pageData.full=='3' ? 'checked' : '']"></i>所有权证满两年/
-                <i :class="['checkbox',pageData.full=='4' ? 'checked' : '']"></i>契税票满两年/
-                <i :class="['checkbox',pageData.full=='5' ? 'checked' : '']"></i>不满两年
+                <i :class="['checkbox',pageData.full=='1' ? 'checked' : '']"></i>所有权证满五年/<i :class="['checkbox',pageData.full=='2' ? 'checked' : '']"></i>契税票满五年/<i :class="['checkbox',pageData.full=='3' ? 'checked' : '']"></i>所有权证满两年/<i :class="['checkbox',pageData.full=='4' ? 'checked' : '']"></i>契税票满两年/<i :class="['checkbox',pageData.full=='5' ? 'checked' : '']"></i>不满两年
             </span></p>
             <p class="section">2、交易房屋<span class="font-bold">
                 <i :class="['checkbox',pageData.isUnique=='1' ? 'checked' : '']"></i>是/
@@ -1292,10 +1727,10 @@
             <p class="section">3、逾期履行本合同约定的义务超过十五日的； </p>
             <footer>6</footer>
         </div>
-        <!-- 第8页 空页面 -->
+        <!-- 第6页 空页面 -->
         <div v-else class="page-height">
             <header>1.0版</header>
-            <p class="section">□甲方收到全部购房款（不含物业交割保证金和户口空挂/迁出保证金）后_____个工作日内交付给乙方；</p>
+            <p class="section margin-top-20">□甲方收到全部购房款（不含物业交割保证金和户口空挂/迁出保证金）后_____个工作日内交付给乙方；</p>
             <p class="section">□按照本项约定时间或约定条件：_______________________将该房屋交付给乙方。</p>
             <p>(二)该房屋交付时，应当履行下列第<span class="underline">1、2、3</span>项手续：</p>
             <p class="section">1、甲方与乙方共同对该房屋附属设施设备、装饰装修、相关物品清单等具体情况进行验收，记录水、电、气表的读数，并交接附件一物业交割单中所列物品；</p>
@@ -1348,10 +1783,10 @@
             <p class="section">3、逾期履行本合同约定的义务超过十五日的； </p>
             <footer>6</footer>
         </div>
-        <!-- 第9页 -->
+        <!-- 第7页 -->
         <div class="page-height">
             <header>1.0版</header>
-            <p class="section">4、拒绝将该房屋出售给乙方或者擅自提高房屋交易价格的；</p>
+            <p class="section margin-top-20">4、拒绝将该房屋出售给乙方或者擅自提高房屋交易价格的；</p>
             <p class="section">5、将该房屋出售给第三方的。</p>
             <p class="section">甲方出现上述根本违约情形之一的，甲方应在违约行为发生之日起十五日内，以相当于该房屋总价款的20%向乙方支付违约金。</p>
             <p>（三）乙方若出现下列情形之一的，乙方构成根本违约，且甲方有权以书面通知的方式解除房屋买卖合同： </p>
@@ -1387,9 +1822,9 @@
                 </span>
                 <span v-else>□有/□无</span>
             </p>
-            <ul v-if="!isBlankContract" class="long-line-box">
-                <li v-for="item in otherAppointArr">
-                    {{item}}
+            <ul v-if="!isBlankContract">
+                <li class="text-underline">
+                    {{pageData.otherAppoint}}
                 </li>
             </ul>
             <ul v-else class="long-line-box">
@@ -1402,10 +1837,10 @@
             <p>（以下无正文）</p>
             <table width="100%">
                 <tr class="font-bold">
-                    <td width="20%"> 出卖人(签章)：</td>
-                    <td width="30%"></td>
-                    <td width="30%">买受人(签章)：</td>
-                    <td width="30%"></td>
+                    <td width="25%"> 出卖人(签章)：</td>
+                    <td></td>
+                    <td width="25%">买受人(签章)：</td>
+                    <td></td>
                 </tr>
                 <tr class="font-bold">
                     <td>【法定代表人】：</td>
@@ -1422,10 +1857,10 @@
             </table>
             <footer>7</footer>
         </div>
-        <!-- 第10页 -->
+        <!-- 第8页 -->
         <div v-if="!isBlankContract" class="page-height">
             <header>1.0版</header>
-            <p>附件一：房屋附属设施清单（甲方同意将以下物品一并转让给乙方）</p>
+            <p class="margin-top-20">附件一：房屋附属设施清单（甲方同意将以下物品一并转让给乙方）</p>
             <p>1．装修情况</p>
             <p>地面：
                 <i :class="['checkbox',pageData.ground && pageData.ground.includes(1)?'checked' : '']"></i>木地板
@@ -1476,8 +1911,8 @@
             <p><i :class="['checkbox',electricApplianceAndFurnitureArr.includes(100116) ? 'checked' : '']"></i>梳妆台 数量：<span class="underline">{{ pageData.dresserNum }}</span> <i :class="['checkbox',pageData.dresserDegree=='1'?'checked' : '']"></i>新 <i :class="['checkbox',pageData.dresserDegree=='2'?'checked' : '']"></i>较新 <i :class="['checkbox',pageData.dresserDegree=='3'?'checked' : '']"></i>旧 <i :class="['checkbox',pageData.dresserDamage==='1'?'checked' : '']"></i>无损坏<i :class="['checkbox',pageData.dresserDamage==='2'?'checked' : '']"></i>有损坏：<span>{{ pageData.dresserDescriptions }}</span></p>
             <p><i :class="['checkbox',electricApplianceAndFurnitureArr.includes(100117) ? 'checked' : '']"></i>椅子 数量：<span class="underline">{{ pageData.chairNum }}</span> <i :class="['checkbox',pageData.chairDegree=='1'?'checked' : '']"></i>新 <i :class="['checkbox',pageData.chairDegree=='2'?'checked' : '']"></i>较新 <i :class="['checkbox',pageData.chairDegree=='3'?'checked' : '']"></i>旧 <i :class="['checkbox',pageData.chairDamage==='1'?'checked' : '']"></i>无损坏<i :class="['checkbox',pageData.chairDamage==='2'?'checked' : '']"></i>有损坏：<span>{{ pageData.chairDescriptions }}</span></p>
             <p><i :class="['checkbox',pageData.otherDescriptions?'checked' : '']"></i>以上清单未涵盖的其他室内装饰品、饰物等室内摆设请在此列明：</p>
-            <ul class="long-line-box">
-                <li v-for="item in otherDescriptionsStrArr">{{ item }}</li>
+            <ul>
+                <li class="text-underline">{{ pageData.otherDescriptions }}</li>
             </ul>
             <table width="100%">
                 <tr class="font-bold">
@@ -1495,7 +1930,7 @@
             </table>
             <footer>8</footer>
         </div>
-        <!-- 第10页 空页面 -->
+        <!-- 第8页 空页面 -->
         <div v-else class="page-height">
             <header>1.0版</header>
             <p>附件一：房屋附属设施清单（甲方同意将以下物品一并转让给乙方）</p>
@@ -1548,7 +1983,7 @@
             </table>
             <footer>8</footer>
         </div>
-        <!-- 第11页 -->
+        <!-- 第9页 -->
         <div class="page-height">
             <header>1.0版</header>
             <p class="margin-top-20"><b style="font-weight: 700;">本合同签署日期：</b>________年________月________日</p>
@@ -1586,15 +2021,15 @@
             </table>
             <footer>9</footer>
         </div>
-        <!-- 第12页 -->
+        <!-- 第10页 -->
         <div class="page-height">
             <header>1.0版</header>
             <table class="margin-top-20 line-height-30" width="100%">
                 <tr class="font-bold">
-                    <td width="22%">代理人（签章）：</td>
-                    <td width="28%"></td>
-                    <td width="20%">代理人（签章）：</td>
-                    <td width="30%"></td>
+                    <td width="25%">代理人（签章）：</td>
+                    <td></td>
+                    <td width="25%">代理人（签章）：</td>
+                    <td></td>
                 </tr>
                 <tr class="font-bold">
                     <td>居间方（丙方）签章：</td>
@@ -1633,8 +2068,6 @@
             pageData: {},
             fixedFacilitiesArr: [], // 需要转让的固定设施(选中的)
             electricApplianceAndFurnitureArr: [], // 需要转让的电器及家具(选中的)
-            otherDescriptionsStrArr: [], // 以上清单未涵盖的其他室内装饰品、饰物等室内摆设描述
-            otherAppointArr:[]//其他约定
           },
           filters:{
             // 获取年月日
@@ -1662,6 +2095,14 @@
                     .replace(/(亿)万|壹(拾)/g, "$1$2")
                     .replace(/^元零?|零分/g, "")
                     .replace(/元$/g, "");
+            },
+            // 过滤性别
+            filterSex(val) {
+                if(val){
+                    return val=='1' ? '男' : '女';
+                }else{
+                    return '×';
+                }
             }
           },
           created: function () {
@@ -1736,13 +2177,6 @@
                 if(this.pageData.electricApplianceAndFurniture) {
                     this.electricApplianceAndFurnitureArr = pageData.electricApplianceAndFurniture.split(',')
                 }
-
-                if(pageData.otherDescriptions) {
-                    this.otherDescriptionsStrArr = this.sliceTextInformation(pageData.otherDescriptions, 50, 2)
-                }
-               
-                // 其他约定数据处理
-                this.otherAppointArr = this.sliceTextInformation(otherAgreements, 50, 5);
             },
             // 截取约定长字段 (打印缘故)
             sliceTextInformation(text, count, rows) {
@@ -1797,7 +2231,7 @@
                 var ctx = watermark.getContext('2d')
                 var ctxr = repeatWatermark.getContext('2d')
 
-                ctx.font = font || '18px 黑体'
+                ctx.font = font || '18px simsunbd'
                 ctx.rotate(-20 * Math.PI / 110)
                 ctx.fillStyle = 'rgba(0,0,0,.3)'
                 if (employeeSm) {
@@ -1806,7 +2240,7 @@
                 } else {
                     ctx.fillText(fillEmployeeInfo, -10, 115)
                 }
-                ctx.font = '12px 黑体'
+                ctx.font = '12px simsunbd'
                 ctx.rotate('20*Math.PI/110')
                 ctx.globalAlpha = 0.3
                 ctxr.clearRect(0, 0, width, height)
@@ -1819,37 +2253,37 @@
 
                 return imgUrl
             },
-            // transformPdf(data = {}) {
-            //     data = Object.assign(data, { timeout: 60000 })
-            //     return axios({
-            //         url: `http://local.chanjue.top:8080/pdf-service/generatePDF`,
-            //         method: 'post',
-            //         data: {
-            //             pages: [location.href],
-            //             waitFor: 'window.isOk==true'
-            //         }
-            //     })
-            // },
+            transformPdf(data = {}) {
+                data = Object.assign(data, { timeout: 60000 })
+                return axios({
+                    url: `http://local.chanjue.top:8080/pdf-service/generatePDF`,
+                    method: 'post',
+                    data: {
+                        pages: [location.href],
+                        waitFor: 'window.isOk==true'
+                    }
+                })
+            },
             creatPdf(){
                 this.transformPdf()
             },
                 // 转成pdf
-            transformPdf(data = {}) {
-                if(this.showContent) {
-                    data = Object.assign(data, {timeout: 60000, waitFor: 'window.isOk==true'})
-                }
-                 axios({
-                    url: `http://local.chanjue.top:8080/pdf-service/generatePDF`,
-                    method: 'post',
-                    data: {
-                        pages: [location.href],
-                        ...data
-                    }
-                }).then(res => {
-                    if(!res.data.data) return
-                    window.open('http://'+ location.hostname + ':8080' + res.data.data)
-                })
-            },
+//             transformPdf(data = {}) {
+//                 if(this.showContent) {
+//                     data = Object.assign(data, {timeout: 60000, waitFor: 'window.isOk==true'})
+//                 }
+//                  axios({
+//                     url: `http://local.chanjue.top:8080/pdf-service/generatePDF`,
+//                     method: 'post',
+//                     data: {
+//                         pages: [location.href],
+//                         ...data
+//                     }
+//                 }).then(res => {
+//                     if(!res.data.data) return
+//                     window.open('http://'+ location.hostname + ':8080' + res.data.data)
+//                 })
+//             },
 
             // // 查询数据字典
             // getDicts(type) {
